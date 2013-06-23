@@ -13,3 +13,6 @@ class CoreException extends \Exception {
 
 class ConfigException extends \Exception {
 }
+
+class CacheException extends \Exception {
+}

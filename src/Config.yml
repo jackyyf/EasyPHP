@@ -1,0 +1,5 @@
+# This is the default config file
+
+Cache:
+  Mode: Disabled # XCache, APC, MemCache will be supported. Redis is in plan.
+  # Add more option here if needed (host, port, user, pass, etc)

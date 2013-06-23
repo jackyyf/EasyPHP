@@ -36,6 +36,87 @@ class Config {
 			if(!file_exists($spyc)) throw new CoreException('Spyc not found.');
 			if(!(is_readable($spyc) && is_file($spyc))) throw new CoreException('Unable to load Spyc.');
 			require_once $spyc;
+
+			$SPYC = new \Spyc();
+			$this -> content = $SPYC -> loadFile($file);
+			if(empty($this -> content)) {
+				throw new ConfigException('Config.yml is an illegal yaml file!');
+			}
+		}
+	}
+
+	public function __invoke() {
+		/**
+		 * if number of argument is 1: it's an alias to get
+		 * if number of argument is 2: it's an alias to getDefault
+		 * @throw: ConfigException when no argument are provided.
+		 */
+
+		$args = func_get_args();
+		$len = count($args);
+		if($len == 0) {
+			throw new ConfigException('Too few arguments.');
+		}
+		if($len == 1) return $this -> get($args[0]);
+		return $this -> getDefault($args[0], $args[1]);
+	}
+
+	public function __isset($node) {
+		// Following commented code is a safety check for Twig, but it's slow (Very slow).
+/*
+		try {
+			$this -> get($node);
+			return true;
+		} catch (ConfigException $e) {
+			return false;
+		}
+*/
+		// Default is return true at all situations. It's dirty, but fast.
+		return true;
+	}
+
+	public function __get($node) {
+		/**
+		 * an alias to get
+		 */
+		return $this -> get($node);
+	}
+
+	public function get($node) {
+
+		/**
+		 * function get
+		 * @param: string $node
+		 * @return: mixed value to the node.
+		 * @throw: ConfigException when no such node in config
+		 */
+
+		$node = explode('.', (string)$node);
+		$current = &$this -> content;
+		foreach($node as $token) {
+			if(empty($token)) continue;
+			if(! array_key_exists($token, $current)) throw new ConfigException('No such node in config.');
+			$current = &$current[$token];
+		}
+
+		// Generate a copy of target.
+
+		$ret = $current;
+		return $ret;
+	}
+
+	public function getDefault($node, $default = NULL) {
+		/**
+		 * function getDefault
+		 * @param: string $node
+		 * @param: mixed $default default value if not found.
+		 * @return: mixed value to the node, or $default if no such node.
+		 */
+
+		try {
+			return $this -> get($node);
+		} catch(ConfigException $e) {
+			return $default;
 		}
 	}
 
