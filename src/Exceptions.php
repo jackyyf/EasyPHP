@@ -16,3 +16,6 @@ class ConfigException extends \Exception {
 
 class CacheException extends \Exception {
 }
+
+class DatabaseException extends \Exception {
+}

@@ -8,9 +8,12 @@
 
 namespace EasyPHP;
 
-abstract class Cache {
+class Cache {
 
 	private static $instance = NULL;
+
+	private function __construct() {
+	}
 
 	private static function initCache() {
 		$config = Config::getInstance();
@@ -18,15 +21,15 @@ abstract class Cache {
 		$fileName = Utils::joinPath(ROOT, 'Cache', $mode . '.php');
 		if(is_file($fileName) && is_readable($fileName)) {
 			require_once $fileName;
-			$className = 'Cache' . $mode;
+			$className = 'Cache\\' . $mode;
 			self::$instance = new $className();
-			if(!self::$instance instanceof self) throw new CacheException("$className is not a valid Cache class.");
+			if(!self::$instance instanceof ICache) throw new CacheException("$className is not a valid Cache class.");
 			return ;
 		}
 		$mode = 'Disabled';
 		require_once Utils::joinPath(ROOT, 'Cache', 'Disabled.php');
-		self::$instance = new CacheDisabled();
-		if(!self::$instance instanceof self) throw new CoreException('Default Cache class is broken!');
+		self::$instance = new Cache\Disabled();
+		if(!self::$instance instanceof ICache) throw new CoreException('Default Cache class is broken!');
 	}
 
 	public static function getInstance() {
@@ -36,19 +39,15 @@ abstract class Cache {
 		return self::$instance;
 	}
 
-	public abstract function __construct();
+}
 
-	public abstract function __destruct();
-
-	public abstract function get($key);
-
-	public abstract function inc($key, $val = 1, $ttl = NULL);
-
-	public abstract function set($key, $val = NULL, $ttl = NULL);
-
-	public abstract function has($key);
-
-	public abstract function remove($key);
-
-	public abstract function clear();
+interface ICache {
+	public function __construct();
+	public function __destruct();
+	public function get($key);
+	public function inc($key, $val = 1, $ttl = NULL);
+	public function set($key, $val = NULL, $ttl = NULL);
+	public function has($key);
+	public function remove($key);
+	public function clear();
 }

@@ -13,16 +13,14 @@ class Utils {
 	}
 
 	public static function joinPath() {
-
 		/**
 		 * function joinPath
-		 * @param: path parts to join together.
-		 * @return: joined path.
+		 * @param path string string parts to join together.
+		 * @return string joined path.
 		 *
 		 * Smart join, all trailing directory separator will be removed.
 		 * @example: joinPath('path1', 'path2', 'path3/', 'finalDirectory/') -> path1/path2/path3/finalDirectory (UNIX)
 		 */
-
 		$wrongDS = DS == '/' ? '\\' : '/'; // Wrong Directory Separator.
 		$tokens = func_get_args();
 		if (empty($tokens)) return '';
@@ -39,5 +37,26 @@ class Utils {
 			$ret .= DS . $nextToken;
 		}
 		return $ret;
+	}
+
+	public static function format() {
+		/**
+		 * function format
+		 * @param template string the template to format, use [[$1]] [[$2]]
+		 * @param token string replacement
+		 * @return null if no argument passed
+		 * @return string replaced string
+		 *
+		 * @TODO Fasten the implementation.
+		 */
+		$tokens = func_get_args();
+		$length = func_num_args();
+		if(!$length) return NULL;
+		$template = $tokens[0];
+		unset($tokens[0]);
+		for($i = 1; $i < $length; ++ $i) {
+			$template = str_replace("[[\$$i]]", $tokens[$i], $template);
+		}
+		return $template;
 	}
 }

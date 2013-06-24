@@ -71,12 +71,12 @@ class Core {
 	}
 
 	public function getSQLQueries() {
-		if(MySQL::hasInstance()) return MySQL::getInstance() -> queryCount(); // Yes, we have connected to MySQL server!
+		if(Database::hasInstance()) return Database::getInstance() -> queryCount(); // Yes, we have connected to MySQL server!
 		return 0; // No MySQL connection are established, so return 0.
 	}
 
 	public function getSQLConnection() {
-		return MySQL::getInstance();
+		return Database::getInstance();
 	}
 
 	public function autoLoader($className) {

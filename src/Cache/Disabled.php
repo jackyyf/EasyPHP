@@ -6,9 +6,12 @@
  * Project is published under GPLv2 (http://www.gnu.org/licenses/gpl-2.0.txt).
  */
 
-namespace EasyPHP;
+namespace EasyPHP\Cache;
 
-class CacheDisabled extends Cache {
+use \EasyPHP\ICache;
+use \EasyPHP\CacheException;
+
+class Disabled implements ICache {
 
 	/**
 	 * This is the default cache (no cache, just like a tmp saving area, destroyed when script exit.)
