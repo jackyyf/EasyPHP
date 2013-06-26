@@ -9,7 +9,7 @@
 
 namespace EasyPHP;
 
-if (!defined('_EASYPHP')) {
+if (!defined('EASYPHP')) {
 	if(!headers_sent()) {
 		header('HTTP/1.1 404 Not Found');
 	}
@@ -61,7 +61,7 @@ class Core {
 	public function getScriptTime() {
 		/**
 		 * Get running time of current request.
-		 * @return double: Running time of current request in second.
+		 * @return double Running time of current request in second.
 		 */
 		return microtime(true) - STARTTIME;
 	}
@@ -71,8 +71,8 @@ class Core {
 	}
 
 	public function getSQLQueries() {
-		if(Database::hasInstance()) return Database::getInstance() -> queryCount(); // Yes, we have connected to MySQL server!
-		return 0; // No MySQL connection are established, so return 0.
+		if(Database::hasInstance()) return Database::getInstance() -> queryCount(); // Yes, we have connected to Database!
+		return 0; // No Database connection are established, so return 0.
 	}
 
 	public function getSQLConnection() {
@@ -83,11 +83,11 @@ class Core {
 		$prefix = 'EasyPHP\\'; // Namespace Prefix
 		if (strncmp($className, $prefix, strlen($prefix)) == 0) {
 			$realName = substr($className, 8);
-			$fileName = ROOT . $realName . '.php';
+			$fileName = ROOT . DS . $realName . '.php';
 			if(file_exists($fileName)) {
 				require_once $fileName;
 			} else if(substr($realName, -9) == 'Exception') { // Exceptions are defined in Exceptions.php
-				require_once ROOT . 'Exceptions.php';
+				require_once ROOT . DS . 'Exceptions.php';
 			}
 		}
 	}

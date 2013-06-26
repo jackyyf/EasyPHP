@@ -29,8 +29,9 @@ define('STARTTIME', microtime(true)); // Page start time.
 // Load Engine Core.
 
 $engineCore = ROOT . DS . 'Core.php';
+
 if(is_readable($engineCore) && !is_dir($engineCore)) {
-	require_once($engineCore);
+	require_once $engineCore;
 } else {
 	if(!headers_sent()) {
 		header('HTTP/1.1 500 Internal Server Error');

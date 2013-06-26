@@ -39,6 +39,33 @@ class Utils {
 		return $ret;
 	}
 
+	public static function joinNS() {
+		/**
+		 * function joinNS
+		 * @param namespace string string parts to join together.
+		 * @return string joined Namespace path.
+		 *
+		 * Smart join, all trailing directory separator will be removed.
+		 * @example: joinPath('path1', 'path2', 'path3\\', '\\finalNamespace\\') -> path1\path2\path3\finalNamespace (UNIX)
+		 */
+		$NS = '\\';
+		$tokens = func_get_args();
+		if (empty($tokens)) return '';
+		$ret = $tokens[0];
+		if($ret[strlen($ret) - 1] == $NS) { // Ended with \
+			$ret = substr($ret, 0, -1);
+		}
+		$size = func_num_args();
+		for($index = 1; $index < $size; ++ $index) {
+			$nextToken = $tokens[$index];
+			if($nextToken[strlen($nextToken) - 1] == $NS) {
+				$nextToken = substr($nextToken, 0, -1);
+			}
+			$ret .= $NS . $nextToken;
+		}
+		return $ret;
+	}
+
 	public static function format() {
 		/**
 		 * function format

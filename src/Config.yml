@@ -3,3 +3,12 @@
 Cache:
   Mode: Disabled # XCache, APC, MemCache will be supported. Redis is in plan.
   # Add more option here if needed (host, port, user, pass, etc)
+
+Database:
+  Engine: MySQL
+  MySQL:
+    Host: localhost
+    User: root
+    Pass: test
+    Database: test
+    Charset: UTF8

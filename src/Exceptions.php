@@ -23,7 +23,7 @@ class DatabaseException extends Exception {
 
 	private $sql;
 
-	public function __construct($message, $sql = NULL) {
+	public function __construct($message = '', $sql = NULL) {
 		$this -> message = $message;
 		$this -> sql = $sql;
 	}

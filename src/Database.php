@@ -11,7 +11,11 @@ namespace EasyPHP;
 
 class Database {
 
-	private static $instance = NULL;
+	/**
+	 * @var IDatabase
+	 */
+
+	private static $instance;
 
 	private function __construct() {
 	}
@@ -22,11 +26,12 @@ class Database {
 		$fileName = Utils::joinPath(ROOT, 'Database', $engine . '.php');
 		if(is_file($fileName) && is_readable($fileName)) {
 			require_once $fileName;
-			$className = 'Database\\' . $engine;
+			$className = Utils::joinNS(__NAMESPACE__, 'Database', $engine);
 			self::$instance = new $className();
-			if(!self::$instance instanceof IDatabase) throw new CacheException("$className is not a valid Database class.");
+			if(!self::$instance instanceof IDatabase) throw new DatabaseException("$className is not a valid Database class.");
 			return ;
 		}
+		throw new DatabaseException('Non-valid Database engine!');
 	}
 
 	public static function getInstance() {
@@ -53,4 +58,6 @@ interface IDatabase {
 	public function deleteRows($tableName, $condition, $count = 1); // For safety, $condition has no default value.
 	public function updateRows($tableName, $data, $condition, $count = 1); // $data is just like in insertRow
 	public function escape($data);
+	public function lockTable($tableName, $exclusive = false);
+	public function unlockTable($tableName);
 }

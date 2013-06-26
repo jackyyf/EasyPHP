@@ -21,7 +21,7 @@ class Cache {
 		$fileName = Utils::joinPath(ROOT, 'Cache', $mode . '.php');
 		if(is_file($fileName) && is_readable($fileName)) {
 			require_once $fileName;
-			$className = 'Cache\\' . $mode;
+			$className = Utils::joinNS(__NAMESPACE__, 'Cache', $mode);
 			self::$instance = new $className();
 			if(!self::$instance instanceof ICache) throw new CacheException("$className is not a valid Cache class.");
 			return ;

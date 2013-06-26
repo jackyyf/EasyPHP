@@ -50,6 +50,7 @@ class MySQL implements IDatabase {
 	}
 
 	public function query($query) {
+		++ $this -> count;
 		$result = $this -> handle -> query($query);
 		if($result === false) {
 			throw new DatabaseException(Utils::format('Failed while execuing query. Errno: [[$1]] Errmsg: [[$2]]',
@@ -78,6 +79,7 @@ class MySQL implements IDatabase {
 		// Leave $data unescaped!
 		if(! is_array($data))
 			throw new DatabaseException('$data should be an array!');
+		$this -> lockTable($tableName, true);
 		$colName = array(); $value = array();
 		foreach($data as $col => $val) {
 			$colName[] = "`$col`";
@@ -89,12 +91,15 @@ class MySQL implements IDatabase {
 		}
 		$colName = implode(',', $colName); $value = implode(',', $value);
 		$query = "INSERT INTO `$tableName` ($colName) VALUES ($value)";
-		return $this -> query($query);
+		$res = &$this -> query($query);
+		$this -> unlockTable();
+		return $res;
 	}
 
 	public function getRows($tableName, $cols = array('*'), $condition = '1', $count = 1, $start = 0) {
 		if(! is_array($cols))
 			throw new DatabaseException('$cols should be an array!');
+		$this -> lockTable($tableName);
 		foreach($cols as $cKey => $cValue) {
 			$cols[$cKey] = "`$cValue`";
 		}
@@ -109,16 +114,21 @@ class MySQL implements IDatabase {
 			}
 			$query .= " LIMIT $lim";
 		}
-		return $this -> query($query);
+		$res = &$this -> query($query);
+		$this -> unlockTable();
+		return $res;
 	}
 
 	public function deleteRows($tableName, $condition, $count = 1) {
+		$this -> lockTable($tableName, true);
 		$query = "DELETE FROM $tableName WHERE $condition";
 		$count = intval($count);
 		if($count > 0) {
 			$query .= " LIMIT $count";
 		}
-		return $this -> query($query);
+		$res = &$this -> query($query);
+		$this -> unlockTable();
+		return $res;
 	}
 
 	public function updateRows($tableName, $data, $condition, $count = 1) {
@@ -126,6 +136,7 @@ class MySQL implements IDatabase {
 			throw new DatabaseException('$data should be an array!');
 		if(empty($data))
 			throw new DatabaseException('$data can not be an empty array!');
+		$this -> lockTable($tableName, true);
 		$query = "UPDATE $tableName SET ";
 		$tokens = array();
 		foreach($data as $key => $value) {
@@ -144,7 +155,24 @@ class MySQL implements IDatabase {
 			$query .= " LIMIT $count";
 		}
 
+		$res = &$this -> query($query);
+		$this -> unlockTable();
+		return $res;
+	}
+
+	public function lockTable($tableName, $exclusive = false) {
+		if(!is_string($tableName)) {
+			if(is_array($tableName)) $tableName = implode(',', $tableName);
+			else throw new DatabaseException('$tableName must be a string or array!');
+		}
+		$mode = $exclusive ? 'WRITE' : 'READ';
+		$query = "LOCK TABLES $tableName $mode";
 		return $this -> query($query);
+	}
+
+	public function unlockTable($tableName = NULL) {
+		// MySQL ignores $tableName
+		return $this -> query('UNLOCK TABLES');
 	}
 }
  
