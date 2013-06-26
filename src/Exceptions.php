@@ -8,14 +8,27 @@
 
 namespace EasyPHP;
 
-class CoreException extends \Exception {
+use \Exception;
+
+class CoreException extends Exception {
 }
 
-class ConfigException extends \Exception {
+class ConfigException extends Exception {
 }
 
-class CacheException extends \Exception {
+class CacheException extends Exception {
 }
 
-class DatabaseException extends \Exception {
+class DatabaseException extends Exception {
+
+	private $sql;
+
+	public function __construct($message, $sql = NULL) {
+		$this -> message = $message;
+		$this -> sql = $sql;
+	}
+
+	public function getSql() {
+		return $this -> sql;
+	}
 }

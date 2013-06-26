@@ -24,7 +24,7 @@ class Database {
 			require_once $fileName;
 			$className = 'Database\\' . $engine;
 			self::$instance = new $className();
-			if(!self::$instance instanceof IDatabase) throw new CacheException("$className is not a valid Cache class.");
+			if(!self::$instance instanceof IDatabase) throw new CacheException("$className is not a valid Database class.");
 			return ;
 		}
 	}
@@ -48,8 +48,9 @@ interface IDatabase {
 	public function injectionCheck($query); // Check SQL Injection.
 	public function safeQuery($query); // With SQL Injection Check.
 	public function queryCount();
-	public function getRows($tableName, $cols = array('*'), $condition = '1', $count = 1);
+	public function getRows($tableName, $cols = array('*'), $condition = '1', $count = 1, $start = 0);
 	public function insertRow($tableName, $data); // Insert one row, $data is an array and key => value.
 	public function deleteRows($tableName, $condition, $count = 1); // For safety, $condition has no default value.
 	public function updateRows($tableName, $data, $condition, $count = 1); // $data is just like in insertRow
+	public function escape($data);
 }
