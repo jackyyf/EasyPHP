@@ -32,3 +32,6 @@ class DatabaseException extends Exception {
 		return $this -> sql;
 	}
 }
+
+class TemplateException extends Exception {
+}

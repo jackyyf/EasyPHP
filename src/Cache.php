@@ -10,6 +10,10 @@ namespace EasyPHP;
 
 class Cache {
 
+	/**
+	 * @var ICache
+	 */
+
 	private static $instance = NULL;
 
 	private function __construct() {
@@ -23,7 +27,10 @@ class Cache {
 			require_once $fileName;
 			$className = Utils::joinNS(__NAMESPACE__, 'Cache', $mode);
 			self::$instance = new $className();
-			if(!self::$instance instanceof ICache) throw new CacheException("$className is not a valid Cache class.");
+			if(!self::$instance instanceof ICache) {
+				self::$instance = NULL;
+				throw new CacheException("$className is not a valid Cache class.");
+			}
 			return ;
 		}
 		$mode = 'Disabled';
