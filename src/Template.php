@@ -40,5 +40,9 @@ class Template {
 }
 
 interface ITemplate {
-
+	public function __construct();
+	public function __destruct();
+	public function setVar($key, $value);
+	public function addFunction($name, $callable);
+	public function render($template, $option = array());
 }

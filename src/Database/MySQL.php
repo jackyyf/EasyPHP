@@ -49,7 +49,7 @@ class MySQL implements IDatabase {
 		//@TODO: Add Injection Check.
 	}
 
-	public function query($query) {
+	public function &query($query) {
 		++ $this -> count;
 		$result = $this -> handle -> query($query);
 		if($result === false) {
@@ -66,12 +66,12 @@ class MySQL implements IDatabase {
 		return $ret;
 	}
 
-	public function safeQuery($query) {
+	public function &safeQuery($query) {
 		$this -> injectionCheck($query);
 		return $this -> query($query);
 	}
 
-	public function escape($data) {
+	public function &escape($data) {
 		return $this -> handle -> real_escape_string($data);
 	}
 
@@ -96,7 +96,7 @@ class MySQL implements IDatabase {
 		return $res;
 	}
 
-	public function getRows($tableName, $cols = array('*'), $condition = '1', $count = 1, $start = 0) {
+	public function &getRows($tableName, $cols = array('*'), $condition = '1', $count = 1, $start = 0) {
 		if(! is_array($cols))
 			throw new DatabaseException('$cols should be an array!');
 		$this -> lockTable($tableName);
