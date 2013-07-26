@@ -9,16 +9,7 @@
 
 namespace EasyPHP; // Use Namespace to avoid name conflict.
 
-\error_reporting(0); // Turn off all error output.
-
-function define($name, $value = NULL) {
-	// Define a constant in namespace EasyPHP
-	\define('EasyPHP\\' . $name, $value);
-}
-
-function defined($name) {
-	return \defined('EasyPHP\\' . $name);
-}
+// \error_reporting(0); // Turn off all error output.
 
 define('EASYPHP', 1); // We are now in EasyPHP.
 define('VERSION', '0.0.1 Alpha');
@@ -44,3 +35,6 @@ if(is_readable($engineCore) && !is_dir($engineCore)) {
 // Init engine.
 
 $core = Core::getInstance();
+$config = Config::getInstance();
+
+echo $config -> Ref1;

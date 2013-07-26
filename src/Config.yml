@@ -1,4 +1,10 @@
 # This is the default config file
+# You can use $CONSTANT$ to reference a constant in runtime
+# Also, you can use @PATH@ to reference a value in config. (With self-loop detection)
+# For example: foo: '$BAR$@FOO.BAR@' will use constant BAR with value of config FOO.BAR
+
+Runtime:
+  Root: '$ROOT$'
 
 Cache:
   Mode: Disabled # XCache, APC, MemCache will be supported. Redis is in plan.
@@ -12,3 +18,15 @@ Database:
     Pass: test
     Database: test
     Charset: UTF8
+
+Template:
+  Engine: Smarty
+  # You can use file, global or false for cache option.
+  # false: disable caching
+  # global: handle by global caching class
+  # file: save to file system.
+  # note: if you use file, you should provide Template.CacheDir, and the should have write permission for that dir.
+  Cache: false
+  CompileDir: '@Runtime.Root@/Cache/Template/Compiled'
+  BaseDir: '@Runtime.Root@/Static/Template'
+  # CacheDir: '@Runtime.Root@/Cache/Template/Cached' # Only used when Cache is file
